@@ -7,13 +7,22 @@ int main() {
   init_pins();
   
   init_boost_pwm();
+  Serial.begin(9600);
+  
   // main loop
   while (1) {
+    cycle_drive_pwm(cycle_drive_pwm_calculator(read_distance_left()), 
+                    cycle_drive_pwm_calculator(read_distance_right()));
+    
+    //cycle_led_display(25);
     cycle_boost_pwm(20);
+    
   }
 }
 
 void init_pins() {
+  /* digital out (LEDs) */
+  DDRK |= 0xFF;
   /* analong in (IR sensors) */
   ;
   /* interface to motor driver */

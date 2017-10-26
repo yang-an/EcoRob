@@ -25,9 +25,10 @@ void init_boost_pwm() {
 
 void cycle_boost_pwm(uint8_t delay_) {
   /* Cycle PWM from 0% to 100% duty cycle */
-  for(uint16_t ocr = 0x0; ocr < 0xFFFF; ocr += 0x0100) {
+  for(uint16_t ocr = 0x0; ocr < (0xFFFF); ocr += 0x0100) {
     OCR1B = ocr;
     OCR1C = OCR1A - OCR1B  ;
     _delay_ms(delay_);
+    Serial.println(ocr); //Diag
   }
 }
