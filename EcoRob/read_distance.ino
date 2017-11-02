@@ -1,15 +1,6 @@
 /*
  * Read sensors for distance-measurement
  */
- 
-void init_adc(){
-  //Active ADC
-  ADCSRA |= (1<<ADEN);
-  //Set prescaler to 64
-  ADCSRA |= (1<<ADPS2)|(1<<ADPS1);
-  //Set reference voltage to 5V
-  ADMUX |= (1<<REFS0);
-}
 
 float read_distance_left(){
   //Select channel 0
