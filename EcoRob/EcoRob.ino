@@ -19,7 +19,7 @@
 #define ADC_MAX_CH    7
 
 /**********global variables**********/
-uint18_t adc[7] = {0};
+uint16_t adc[7] = {0};
 
 int main() {
   /* Init routine:
@@ -37,6 +37,7 @@ int main() {
   Serial.begin(9600);
 
   while (1) {
+    
   }
 }
 

@@ -4,7 +4,7 @@
 
 void init_adc()
 {
-  TCCR0A = (1<<WGM1);                 //CTC
+  TCCR0A = (1<<WGM01);                 //CTC
   TCCR0B = (1<<CS01);                 //16MHz / 8 = 2MHz
   OCR0A = 250;                        //2MHz / 8kHz = 250
 

@@ -10,3 +10,12 @@
   else return 0;
  }
 
+void cycle_diagnose_display(uint8_t mode){
+  switch (mode){
+    case 1: cycle_led_display(10);
+    case 2: cycle_led_display(25);
+    case 3: cycle_led_display(60);
+    case 4: cycle_led_display(85);
+  }
+}
+
