@@ -37,7 +37,13 @@ int main() {
   sei();
   
   while (1) {
-    
+    Serial.print("L: ");
+    Serial.print(DIST_LEFT);
+    Serial.print(" | C: ");
+    Serial.print(DIST_CENTER);
+    Serial.print(" | R: ");
+    Serial.println(DIST_RIGHT);
+    _delay_ms(5);
   }
 }
 
