@@ -19,7 +19,7 @@
 #define ADC_MAX_CH    7
 
 /**********global variables**********/
-uint16_t adc[7] = {0};
+volatile uint16_t adc[7] = {0};
 
 int main() {
   /* Init routine:
@@ -33,11 +33,12 @@ int main() {
   init_adc();
   init_boost_pwm();
   init_driver_pwm();
-
+  sei();
   Serial.begin(9600);
-
+  
   while (1) {
-    
+    Serial.println(adc[0]);
+    _delay_ms(20);
   }
 }
 
