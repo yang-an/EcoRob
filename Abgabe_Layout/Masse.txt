@@ -1,2 +1,0 @@
-Boost Converter: 61 x 66 mm^2
-Motortreiber: 63 x 62 mm^2

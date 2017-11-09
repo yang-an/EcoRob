@@ -18,11 +18,17 @@ void init_boost_pwm() {
   TCCR1B |= (1 << WGM13);
   TCCR1A |= (1 << WGM10);
   
-  // Counter TOP value (adjustable)
+  // Counter TOP value (adjustable PWM frequency)
   OCR1A = TC1_TOP;
   
   // Initialize compare match registers for zero output
   OCR1B = OCR1A;
+  OCR1C = OCR1A - OCR1B;
+}
+
+void set_boost_pwm_ocr(uint16_t ocr) {
+  // clamp max value
+  OCR1B = ocr <= OCR1A ? ocr : OCR1A;
   OCR1C = OCR1A - OCR1B;
 }
 

@@ -19,7 +19,7 @@
 #define ADC_MAX_CH    7
 
 /**********global variables**********/
-uint18_t adc[7] = {0};
+volatile uint16_t adc[7] = {0};
 
 int main() {
   /* Init routine:
@@ -29,14 +29,15 @@ int main() {
    *  - PWM generator for boost converter
    *  - PWM generator for motor drivers
    */
+  Serial.begin(115200);
   init_pins();
   init_adc();
   init_boost_pwm();
   init_driver_pwm();
-
-  Serial.begin(9600);
-
+  sei();
+  
   while (1) {
+    
   }
 }
 

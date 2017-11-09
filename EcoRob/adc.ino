@@ -1,29 +1,55 @@
 /*
- * ADC
+ * ADC setup and sample routine
+ * 
+ * ADC capture is triggered by Timer0, the resulting sampling
+ * rate is 8 kHz. Normal conversion takes 13 clock cycles, so
+ * ADC clock needs to be greater than 104 kHz.
+ * The converted value is written to the global data array in
+ * the ADC ISR.
  */
 
 void init_adc()
 {
-  TCCR0A = (1<<WGM1);                 //CTC
-  TCCR0B = (1<<CS01);                 //16MHz / 8 = 2MHz
-  OCR0A = 250;                        //2MHz / 8kHz = 250
-
-  ADMUX = (1<<REFS0);                 //set reference to 5V
-  ADCSRA = (1<<ADEN) | (1<<ADATE) | (1<<ADIE) | (1<<ADPS2) | (1<<ADPS1) | (1<<ADPS0);  //auto trigger + interrupt + 16MHz / 128
-  ADCSRB = (1<<ADTS1) | (1<<ADTS0);   //use TC0 OVF as trigger
-
-  DIDR0 = 0xFF;                       //disable digital inputs on PORTF
-
-  ADCSRA |= (1<<ADSC);                //start first conversion
+  /* Init Timer0 */
+  // mode 1: CTC
+  TCCR0A |= (1<<WGM01);
+  // prescaler: 8 (2 MHz)
+  TCCR0B |= (1<<CS01);
+  // output compare: 250 (8 kHz ADC trigger)
+  OCR0A = 250;
+  
+  /* Init ADC */
+  // internal VREF (5V)
+  ADMUX = (1<<REFS0);
+  // enable ADC + auto trigger + interrupt
+  ADCSRA |= (1<<ADEN) | (1<<ADATE) | (1<<ADIE);
+  // prescaler 128 (125 kHz ADC clock)
+  ADCSRA |= (1<<ADPS2) | (1<<ADPS1) | (1<<ADPS0);
+  //use OC0A as trigger
+  ADCSRB |= (1<<ADTS1) | (1<<ADTS0);
+  //disable digital inputs on PORTF
+  DIDR0 = 0xFF;                       
+  //start first conversion
+  ADCSRA |= (1<<ADSC);                
 }
 
 ISR(ADC_vect)
 {
+  // get current channel
   uint8_t ch = ADMUX & 0x1F;
+  //Serial.print("current ch: ");
+  //Serial.println(ch);
+  // copy current reading into array
+  //Serial.print("current reading: ");
+  //Serial.println(ADC);
   adc[ch] = ADC;
-  ch++;
-  ch %= ADC_MAX_CH;
+  // increment channel counter
+  ch = (ch+1) % ADC_MAX_CH;
+  // clear all MUX bits
   ADMUX &= ~0x1F;
+  // set MUX bits
   ADMUX |= ch;
+  // clear timer interrupt flag
+  TIFR0 |= (1 << OCF0A);
 }
 

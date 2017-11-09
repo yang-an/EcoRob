@@ -1,3 +1,4 @@
+/*
 int main(){
   init();
   Serial.begin(9600);
@@ -131,4 +132,4 @@ void Led_Display (uint8_t percent){
   else if (percent > 75 && percent <= 87) DDRK = 0b00000001;
   else DDRK = 0b00000000;
 }
-
+*/
