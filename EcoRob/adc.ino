@@ -17,6 +17,8 @@ void init_adc()
   TCCR0B |= (1<<CS01);
   // output compare: 250 (8 kHz ADC trigger)
   OCR0A = 250;
+  // enable Timer0 compare A interrupt
+  TIMSK0 |= (1<<OCIE0A);
   
   /* Init ADC */
   // internal VREF (5V)
@@ -50,6 +52,6 @@ ISR(ADC_vect)
   // set MUX bits
   ADMUX |= ch;
   // clear timer interrupt flag
-  TIFR0 |= (1 << OCF0A);
+  //TIFR0 |= (1 << OCF0A);
 }
 
