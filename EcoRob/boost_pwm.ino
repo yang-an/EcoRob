@@ -8,7 +8,7 @@
 
 #define TC1_TOP                 319   // 16 MHz / 50 kHz - 1 = 319
 #define BOOST_PWM_MAX           303   // 319 * 95% = 303
-#define BOOST_CONTROLLER_GAIN   64    // fixed point 2.6 Bit
+#define BOOST_CONTROLLER_GAIN   4    // fixed point 4.4 Bit
 #define BOOST_OUTPUT_REF        785   // 12 V / (1k + 470) * 470 / 5 V * 1023 = 785
 
 void init_boost_pwm() {
@@ -56,15 +56,20 @@ ISR(TIMER0_COMPA_vect)
   else
   {
     isr_cntr = 0;
-    
-    xd = BOOST_OUTPUT_REF - BOOST_U_OUT;
-    y = y + ((xd * BOOST_CONTROLLER_GAIN) >> 6);
-
+    xd = BOOST_OUTPUT_REF - AUX_IN;
+    //xd = BOOST_OUTPUT_REF - BOOST_U_OUT;
+    y = y + ((xd * BOOST_CONTROLLER_GAIN) >> 4);
+    /*
+    Serial.print(xd);
+    Serial.print(" ");
+    Serial.println(y);
+    */
     if(y > BOOST_PWM_MAX)
       y = BOOST_PWM_MAX;
     else if(y < 0)
       y = 0;
 
+    //set_boost_pwm_ocr(150);   // y is already limited -> can be converted to unsigned
     set_boost_pwm_ocr((uint16_t)y);   // y is already limited -> can be converted to unsigned
   }
 }

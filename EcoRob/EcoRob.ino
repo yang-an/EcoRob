@@ -16,10 +16,11 @@
 #define MOTOR_I_RIGHT adc[4]
 #define MOTOR_I_LEFT  adc[5]
 #define DIST_LEFT     adc[6]
-#define ADC_MAX_CH    7
+#define AUX_IN        adc[7]
+#define ADC_MAX_CH    8
 
 /**********global variables**********/
-volatile uint16_t adc[7] = {0};
+volatile uint16_t adc[8] = {0};
 
 int main() {
   /* Init routine:
@@ -32,12 +33,18 @@ int main() {
   Serial.begin(115200);
   init_pins();
   init_adc();
+  set_boost_pwm_ocr(150);
   init_boost_pwm();
   init_driver_pwm();
   sei();
   
   while (1) {
     
+    Serial.print(AUX_IN);
+    Serial.print(" ");
+    Serial.println(OCR1B);
+    
+    _delay_ms(2);
   }
 }
 
