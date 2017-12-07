@@ -32,15 +32,27 @@ int main() {
   init_pins();
   init_adc();
   init_boost_pwm();
-  init_driver_pwm();
+  init_drive_pwm();
   sei();
   Serial.begin(9600);
+
+  //int test1 = drive_power_test();
+  
   
   while (1) {
+  
+    /*
     Serial.println(adc[0]);
     _delay_ms(20);
+    */
+    
+    for (int i = -15; i <= 15; i++){
+      drive(i , 15);
+      _delay_ms(2000);
+    }
   }
 }
+
 
 
 
