@@ -39,11 +39,7 @@ ISR(ADC_vect)
 {
   // get current channel
   uint8_t ch = ADMUX & 0x1F;
-  //Serial.print("current ch: ");
-  //Serial.println(ch);
   // copy current reading into array
-  //Serial.print("current reading: ");
-  //Serial.println(ADC);
   adc[ch] = ADC;
   // increment channel counter
   ch = (ch+1) % ADC_MAX_CH;
@@ -52,6 +48,6 @@ ISR(ADC_vect)
   // set MUX bits
   ADMUX |= ch;
   // clear timer interrupt flag
-  //TIFR0 |= (1 << OCF0A);
+  TIFR0 |= (1 << OCF0A);
 }
 

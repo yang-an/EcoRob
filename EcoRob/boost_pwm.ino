@@ -53,9 +53,9 @@ ISR(TIMER0_COMPA_vect)
   sample frequency: 8 kHz (ADC sample clock)
   */
   static uint8_t isr_cntr = 0;
-  //int16_t xd = 0;
+  int16_t xd = 0;
   static int16_t xdsum = 0;
-  //static int16_t y = 0;
+  static int16_t y = 0;
   
   
   if(isr_cntr < ADC_MAX_CH)
@@ -63,14 +63,12 @@ ISR(TIMER0_COMPA_vect)
   else
   {
     isr_cntr = 0;
-    //xd = BOOST_OUTPUT_REF - AUX_IN;
     xd = BOOST_OUTPUT_REF - BOOST_U_OUT;
-    // integrator
-    //y = KP * xd;
 
     xdsum += xd;
     y = (uint32_t)KP * xd + KI * xdsum;
 
+    // anti-windup
     // shift left (11.5 fixed point)
     if(y > (BOOST_PWM_MAX << 5)) {
       y = BOOST_PWM_MAX << 5;
@@ -80,8 +78,6 @@ ISR(TIMER0_COMPA_vect)
       y = 0;
       xdsum = 0;
     }
-    
-    
     set_boost_pwm_ocr((uint16_t)y);   // y is already limited -> can be converted to unsigned
   }
 }

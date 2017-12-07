@@ -7,7 +7,7 @@
 #define maxAngle 15
 #define minAngle -15
 
-void init_drive_pwm() {
+void init_driver_pwm() {
   /* Initialize timers for motor driver PWM */
   //Initialisation of timer 4 for drive 1
   //Einstellung des Prescalers auf 1
