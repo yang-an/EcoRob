@@ -32,7 +32,7 @@ void init_adc()
   //disable digital inputs on PORTF
   DIDR0 = 0xFF;                       
   //start first conversion
-  ADCSRA |= (1<<ADSC);                
+  ADCSRA |= (1<<ADSC);               
 }
 
 ISR(ADC_vect)

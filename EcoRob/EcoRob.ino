@@ -25,9 +25,6 @@
 /**********global variables**********/
 volatile uint16_t adc[8] = {0};
 
-//test
-volatile int32_t y = 0;
-volatile int16_t xd = 0;
 
 int main() {
   /* Init routine:
@@ -46,6 +43,7 @@ int main() {
   
   while (1);
 }
+
 
 
 

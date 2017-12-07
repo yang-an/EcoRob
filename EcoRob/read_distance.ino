@@ -13,7 +13,7 @@ float read_distance_left(){
 }
 
 float read_distance_right(){
-  //Select channel 0
+  //Select channel 1
   ADMUX |= (1<<MUX0);
   //Start conversion
   ADCSRA |= (1<<ADSC);
@@ -24,6 +24,6 @@ float read_distance_right(){
 
 float norm_distance (uint16_t distance_){
   float normDistance = 0.0;
-  normDistance = (float)distance_/625;
+  normDistance = (float)distance_/1024;
   return normDistance;
 }

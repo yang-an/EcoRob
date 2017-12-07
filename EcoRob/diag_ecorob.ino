@@ -10,3 +10,13 @@
   else return 0;
  }
 
+void cycle_diagnose_display(uint8_t mode){
+  switch (mode){ 
+    case 1: cycle_led_display(read_distance_left()*100); break;
+    case 2: cycle_led_display(read_distance_right()*100); break;
+    case 3: cycle_led_display(60); break;
+    case 4: cycle_led_display(85); break;
+    default: cycle_led_display(0); break;
+  }
+}
+
