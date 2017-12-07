@@ -40,28 +40,11 @@ int main() {
   Serial.begin(115200);
   init_pins();
   init_adc();
-  //set_boost_pwm_ocr(150);
   init_boost_pwm();
   init_driver_pwm();
   sei();
   
-  while (1) {
-    Serial.print("Kp: ");
-    Serial.print(KP);
-    Serial.print(" | ");
-    Serial.print("Ki: ");
-    Serial.print(KI);
-    Serial.print(" | ");
-    Serial.print("Uout: ");
-    Serial.print(BOOST_U_OUT);
-    Serial.print(" | ");
-    Serial.print("xd: ");
-    Serial.print(xd);
-    Serial.print(" | ");
-    Serial.print("y: ");
-    Serial.println(y);
-    _delay_ms(2);
-  }
+  while (1);
 }
 
 
