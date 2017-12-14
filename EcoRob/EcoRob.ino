@@ -41,7 +41,22 @@ int main() {
   init_driver_pwm();
   sei();
   
-  while (1);
+  while (1) {
+    static uint16_t leftBuf = 0, rightBuf = 0;
+    leftBuf -= (leftBuf >> 3);
+    rightBuf -= (rightBuf >> 3);
+    leftBuf += DIST_LEFT;
+    rightBuf += DIST_RIGHT;
+    
+    
+    Serial.print(leftBuf >> 6);
+    Serial.print(" | ");
+    Serial.println(rightBuf >> 6);
+    driver_pwm_forward((leftBuf >> 6) + 64, (rightBuf >> 6) + 64);
+    for (uint8_t i=0; i<(AUX_IN >> 2); i++)
+      _delay_ms(1);
+  }
+    
 }
 
 
