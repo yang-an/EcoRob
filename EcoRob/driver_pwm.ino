@@ -7,7 +7,7 @@
  * driver IC (IN1 or IN2).
  */
 
-#define DRIVER_MAXSPEED 15
+#define DRIVER_MAXSPEED 15  // 25% of possible maxspeed
 #define DRIVER_MINSPEED -15
 #define DRIVER_MAXANGLE 15
 #define DRIVER_MINANGLE -15
@@ -47,10 +47,10 @@ void driver_pwm_forward(uint16_t pwmLeft, uint16_t pwmRight) {
   //Enable Motor Right setzten
   PORTE |= (1 << PORTE4);
   //PWM Signal auf PH3
-  OCR4A = pwmLeft;
+  OCR4A = pwmRight;
   OCR4C = OCR4A;
   //PWM Signal auf PE3
-  OCR3A = pwmRight;
+  OCR3A = pwmLeft;
   OCR3C = OCR3A;
   //PH5 und PE5 sind auf GND 
 }
@@ -78,25 +78,25 @@ void drive(int8_t valueAngle, int8_t valueSpeed){
   int16_t pwmLeft, pwmRight;
 
   //Limit angle-value
-  if (valueAngle < minAngle) angleCurrent = minAngle;
-  else if (valueAngle > maxAngle) angleCurrent = maxAngle;
+  if (valueAngle < DRIVER_MINANGLE) angleCurrent = DRIVER_MINANGLE;
+  else if (valueAngle > DRIVER_MAXANGLE) angleCurrent = DRIVER_MAXANGLE;
   else angleCurrent = valueAngle;
 
   //Limit speed-value
-  if (valueSpeed < minSpeed) speedCurrent = minSpeed;
-  else if (valueSpeed > maxSpeed) speedCurrent = maxSpeed;
+  if (valueSpeed < DRIVER_MINSPEED) speedCurrent = DRIVER_MINSPEED;
+  else if (valueSpeed > DRIVER_MAXSPEED) speedCurrent = DRIVER_MAXSPEED;
   else speedCurrent = valueSpeed;
 
   //Set driving direction
-  if (speedCurrent >= 0) drive_set_direction(1);
-  else drive_set_direction(0);
+  if (speedCurrent >= 0) driver_set_direction(1);
+  else driver_set_direction(0);
 
 
-  pwmLeft  = abs(speedCurrent) * 255 / maxSpeed;
-  pwmRight = abs(speedCurrent) * 255 / maxSpeed;
+  pwmLeft  = abs(speedCurrent) * 255 / DRIVER_MAXSPEED;
+  pwmRight = abs(speedCurrent) * 255 / DRIVER_MAXSPEED;
 
-  pwmLeft = (pwmLeft + (angleCurrent * 255 / maxAngle)) / 2;
-  pwmRight = (pwmRight + (-angleCurrent * 255 / maxAngle)) / 2;
+  pwmLeft = (pwmLeft + (angleCurrent * 255 / DRIVER_MAXANGLE)) / 2;
+  pwmRight = (pwmRight + (-angleCurrent * 255 / DRIVER_MAXANGLE)) / 2;
 
   /*Serial.print("PWM-Left: ");
   Serial.println(pwmLeft);
@@ -104,12 +104,6 @@ void drive(int8_t valueAngle, int8_t valueSpeed){
   Serial.println(pwmRight);
   _delay_ms(1000);*/
   
-  drive_pwm_forward(pwmLeft, pwmRight);
-  
+  driver_pwm_forward(pwmLeft, pwmRight);
 }
-
-
-
-
-
 
