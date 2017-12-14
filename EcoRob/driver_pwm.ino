@@ -1,61 +1,46 @@
 /*
+ * PWM generator for driver circuit
+ * 
+ * Create two PWM signals, one for each driver channel
+ * (left/right). Direction of driving is controlled
+ * by applying PWM signal to correct input pin of the
+ * driver IC (IN1 or IN2).
+ */
 
-*/
-
-#define maxSpeed 15
-#define minSpeed -15
-#define maxAngle 15
-#define minAngle -15
+#define DRIVER_MAXSPEED 15
+#define DRIVER_MINSPEED -15
+#define DRIVER_MAXANGLE 15
+#define DRIVER_MINANGLE -15
 
 void init_driver_pwm() {
   /* Initialize timers for motor driver PWM */
   //Initialisation of timer 4 for drive 1
   //Einstellung des Prescalers auf 1
   TCCR4B |= (1 << CS40);
-  //Activate Phase-correct PWM, 10-bit
-  TCCR4A |= (1 << WGM41) | (1 << WGM40);
-  //Set pin-mode to normal
+  //Activate Fast PWM, 8-bit (mode 5)
+  TCCR4A |= (1 << WGM40);
+  TCCR4B |= (1 << WGM42);
+  //Set non-inverting output mode
   TCCR4A |= (1 << COM4A1);
 
   //Initialisation of timer 3 for drive 2
   //Einstellung des Prescalers auf 1
   TCCR3B |= (1 << CS30);
-  //Activate Phase-correct PWM, 10-bit
-  TCCR3A |= (1 << WGM31) | (1 << WGM30);
-  //Set pin-mode to normal
+  //Activate Fast PWM, 8-bit (mode 5)
+  TCCR3A |= (1 << WGM30);
+  TCCR3B |= (1 << WGM32);
+  //Set non-inverting output mode
   TCCR3A |= (1 << COM3A1);
 }
 
-uint8_t drive_pwm_calculator (float normDistance) {
+uint8_t driver_pwm_calculator (float normDistance) {
   //Calculation of PWM for  drive
   uint8_t pwm = 0;
   pwm = (1 - normDistance) * 1024;
   return pwm;
 }
 
-/*
-int drive_power_test(){
-  char wert_a[3];
-  int i = 0;
-  int int_wert1 = 0;
-  Serial.print("Bitte den ersten Wert eingeben");
-  while (Serial.available() > 0 && i<4){
-    wert_a[i] = Serial.read();
-    i++;
-    Serial.print("test");
-  }
-  Serial.flush();
-  int_wert1 = atoi(wert_a);
-  _delay_ms(1000);
-  Serial.println(int_wert1);
-}
-*/
-
-void drive_pwm_set () {
-  
-}
-
-void drive_pwm_forward(uint16_t pwmLeft, uint16_t pwmRight) {
+void driver_pwm_forward(uint16_t pwmLeft, uint16_t pwmRight) {
   //Set compare registers to calculated pwm values
   //Enable Motor Left setzen
   PORTH |= (1 << PORTH4);
@@ -68,19 +53,12 @@ void drive_pwm_forward(uint16_t pwmLeft, uint16_t pwmRight) {
   OCR3A = pwmRight;
   OCR3C = OCR3A;
   //PH5 und PE5 sind auf GND 
-
-  //Serial.print("OCR4A: ");
-  //Serial.println(OCR4A);
-  //Serial.print("OCR3A: ");
-  //Serial.println(OCR3A);
-
-  //Serial.println(35000);
 }
 
-//ggf pruefen
-void drive_set_direction(uint8_t valueDirection) {
-  //valueDirection==0 enspricht forwearts fahrt
-  if (valueDirection == 0) {
+void driver_set_direction(uint8_t valueDirection) {
+  /* Set direction of movement */
+  if (valueDirection == 1) {
+    // backwards: apply signals to 
     TCCR3A |= (1 << COM3A1);
     TCCR3A &= ~(1 << COM3C1);
     TCCR4A |= (1 << COM4A1);
@@ -114,11 +92,11 @@ void drive(int8_t valueAngle, int8_t valueSpeed){
   else drive_set_direction(0);
 
 
-  pwmLeft  = abs(speedCurrent) * 1024 / maxSpeed;
-  pwmRight = abs(speedCurrent) * 1024 / maxSpeed;
+  pwmLeft  = abs(speedCurrent) * 255 / maxSpeed;
+  pwmRight = abs(speedCurrent) * 255 / maxSpeed;
 
-  pwmLeft = (pwmLeft + (angleCurrent * 1024 / maxAngle)) / 2;
-  pwmRight = (pwmRight + (-angleCurrent * 1024 / maxAngle)) / 2;
+  pwmLeft = (pwmLeft + (angleCurrent * 255 / maxAngle)) / 2;
+  pwmRight = (pwmRight + (-angleCurrent * 255 / maxAngle)) / 2;
 
   /*Serial.print("PWM-Left: ");
   Serial.println(pwmLeft);
