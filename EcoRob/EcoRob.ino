@@ -43,17 +43,19 @@ int main() {
   
   while (1) {
     static uint16_t leftBuf = 0, rightBuf = 0;
-    leftBuf -= (leftBuf >> 3);
-    rightBuf -= (rightBuf >> 3);
+    leftBuf -= (leftBuf >> 4);
+    rightBuf -= (rightBuf >> 4);
     leftBuf += DIST_LEFT;
     rightBuf += DIST_RIGHT;
     
     
-    Serial.print(leftBuf >> 6);
-    Serial.print(" | ");
-    Serial.println(rightBuf >> 6);
-    driver_pwm_forward((leftBuf >> 6) + 64, (rightBuf >> 6) + 64);
-    for (uint8_t i=0; i<(AUX_IN >> 2); i++)
+    //driver_pwm_forward((leftBuf >> 5) + 64, (rightBuf >> 5) + 64);
+    //driver_pwm_forward(127 - (rightBuf >> 5), 127 - (leftBuf >> 5));
+    driver_pwm_forward(
+      (127 - (rightBuf >> 6) + (leftBuf >> 6) + 64) >> 1,
+      (127 - (leftBuf >> 6) + (rightBuf >> 6) + 64) >> 1
+    );
+    for (uint8_t i=0; i<(AUX_IN >> 4); i++)
       _delay_ms(1);
   }
     

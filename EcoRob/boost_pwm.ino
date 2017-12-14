@@ -60,6 +60,7 @@ ISR(TIMER0_COMPA_vect)
   
   if(isr_cntr < ADC_MAX_CH)
     isr_cntr++;
+    
   else
   {
     isr_cntr = 0;
