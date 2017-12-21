@@ -26,6 +26,22 @@
 volatile uint16_t adc[8] = {0};
 
 
+void setSpeeds(uint8_t avgShift, uint8_t sensShift, uint8_t offset) {
+  // calculate rolling average
+  static uint16_t leftBuf, rightBuf = 0;
+  leftBuf -= (leftBuf >> avgShift);
+  rightBuf -= (rightBuf >> avgShift);
+  leftBuf += DIST_LEFT;
+  rightBuf += DIST_RIGHT;
+
+  // apply speeds
+  // shift sensor data by 2 (empirical value)
+  driver_pwm_forward(
+    offset - (rightBuf >> avgShift+sensShift) + (leftBuf >> avgShift+sensShift) >> 1,
+    offset - (leftBuf >> avgShift+sensShift) + (rightBuf >> avgShift+sensShift) >> 1
+  );
+}
+
 int main() {
   /* Init routine:
    *  1. Set pin modes and pullups
@@ -33,6 +49,8 @@ int main() {
    *  - ADC
    *  - PWM generator for boost converter
    *  - PWM generator for motor drivers
+   *  3. Wait until Start button has been pressed
+   *  4. Let the show begin
    */
   Serial.begin(115200);
   init_pins();
@@ -40,25 +58,12 @@ int main() {
   init_boost_pwm();
   init_driver_pwm();
   sei();
-  
-  while (1) {
-    static uint16_t leftBuf = 0, rightBuf = 0;
-    leftBuf -= (leftBuf >> 4);
-    rightBuf -= (rightBuf >> 4);
-    leftBuf += DIST_LEFT;
-    rightBuf += DIST_RIGHT;
-    
-    
-    //driver_pwm_forward((leftBuf >> 5) + 64, (rightBuf >> 5) + 64);
-    //driver_pwm_forward(127 - (rightBuf >> 5), 127 - (leftBuf >> 5));
-    driver_pwm_forward(
-      (127 - (rightBuf >> 6) + (leftBuf >> 6) + 64) >> 1,
-      (127 - (leftBuf >> 6) + (rightBuf >> 6) + 64) >> 1
-    );
-    for (uint8_t i=0; i<(AUX_IN >> 4); i++)
-      _delay_ms(1);
-  }
-    
+
+  // wait until start button has been pressed
+  while (PINB & (1 << PB3));
+  // start
+  while (1)
+    setSpeeds(3, 2, 255);
 }
 
 

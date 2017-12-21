@@ -10,6 +10,7 @@
 #define BOOST_PWM_MAX           287   // 319 * 95% = 303
 #define BOOST_CONTROLLER_GAIN   4    // fixed point 4.4 Bit
 #define BOOST_OUTPUT_REF        785   // 12 V / (1k + 470) * 470 / 5 V * 1023 = 785
+//#define BOOST_OUTPUT_REF        523   // 8 V / (1k + 470) * 470 / 5 V * 1023 = 785
 
 void init_boost_pwm() {
   /* Initialize Timer1 for dual-phase PWM */
@@ -58,8 +59,13 @@ ISR(TIMER0_COMPA_vect)
   static int32_t y = 0;
   
   
-  if(isr_cntr < ADC_MAX_CH)
+  if(isr_cntr < ADC_MAX_CH) {
+    /* there is no new measured output voltage yet
+     * use the time to calculate "fuel" gauge
+     */
     isr_cntr++;
+    PORTK = 0xFF << (BOOST_U_IN >> 7);
+  }
     
   else
   {
