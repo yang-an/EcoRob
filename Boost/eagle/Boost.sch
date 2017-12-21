@@ -14532,10 +14532,10 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 <part name="U$3" library="ppst002" deviceset="RIACON-2" device=""/>
 <part name="F1" library="fuse" deviceset="SH22,5" device=""/>
 <part name="X1" library="con-molex" deviceset="22-23-2051" device=""/>
-<part name="R1" library="resistor" deviceset="R-EU_" device="MELF0204W"/>
-<part name="R2" library="resistor" deviceset="R-EU_" device="MELF0204W"/>
-<part name="R3" library="resistor" deviceset="R-EU_" device="MELF0204W"/>
-<part name="R4" library="resistor" deviceset="R-EU_" device="MELF0204W"/>
+<part name="R1" library="resistor" deviceset="R-EU_" device="MELF0204W" value="0"/>
+<part name="R2" library="resistor" deviceset="R-EU_" device="MELF0204W" value="0"/>
+<part name="R3" library="resistor" deviceset="R-EU_" device="MELF0204W" value="10k"/>
+<part name="R4" library="resistor" deviceset="R-EU_" device="MELF0204W" value="10k"/>
 <part name="C2" library="ppst002" deviceset="ELKO1000U" device=""/>
 <part name="X2" library="con-molex" deviceset="22-23-2021" device=""/>
 <part name="H1" library="holes" deviceset="MOUNT-HOLE" device="3.3"/>
